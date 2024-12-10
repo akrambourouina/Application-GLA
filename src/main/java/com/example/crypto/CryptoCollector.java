@@ -13,10 +13,9 @@ import org.json.JSONObject;
 
 public class CryptoCollector {
 
-	private static final String INSERT_QUERY = "INSERT INTO crypto_data "
-			+ "(id, rank, symbol, name, supply, max_supply, market_cap_usd, "
-			+ "volume_usd_24h, price_usd, change_percent_24h, vwap_24h, explorer) "
-			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_QUERY = "INSERT INTO crypto_data_minimal "
+			+ "(id, rank, symbol, name, market_cap_usd, price_usd) "
+			+ "VALUES (?, ?, ?, ?, ?, ?)";
 
 	public String collectData() {
 		StringBuilder response = new StringBuilder();
@@ -64,39 +63,27 @@ public class CryptoCollector {
 					int rank = asset.getInt("rank");
 					String symbol = asset.getString("symbol");
 					String name = asset.getString("name");
-					double supply = asset.getDouble("supply");
-					double maxSupply = asset.optDouble("maxSupply", 0.0);
 					double marketCapUsd = asset.optDouble("marketCapUsd", 0.0);
-					double volumeUsd24h = asset.optDouble("volumeUsd24h", 0.0);
 					double priceUsd = asset.optDouble("priceUsd", 0.0);
-					double changePercent24h = asset.optDouble("changePercent24h", 0.0);
-					double vwap24h = asset.optDouble("vwap24h", 0.0);
-					String explorer = asset.optString("explorer", "");
 
-					// Vérifier et ajuster les valeurs trop grandes pour éviter l'overflow
+					// Limiter les valeurs pour éviter les dépassements
 					if (marketCapUsd >= 1e12) {
-						marketCapUsd = 1e12;  // Limiter à la valeur maximale
+						marketCapUsd = 999_999_999_999.99; // Limite maximale
 					}
 					if (priceUsd >= 1e6) {
-						priceUsd = 1e6;  // Limiter à une valeur raisonnable
+						priceUsd = 999_999.99; // Limite maximale pour les prix
 					}
 
 					// Afficher les données à insérer
-					System.out.println("Insérer : " + id + ", " + rank + ", " + symbol + ", " + name + ", " + supply);
+					System.out.println("Insérer : " + id + ", " + rank + ", " + symbol + ", " + name);
 
 					// Insérer les données dans la base de données
 					stmt.setString(1, id);
 					stmt.setInt(2, rank);
 					stmt.setString(3, symbol);
 					stmt.setString(4, name);
-					stmt.setDouble(5, supply);
-					stmt.setDouble(6, maxSupply);
-					stmt.setDouble(7, marketCapUsd);
-					stmt.setDouble(8, volumeUsd24h);
-					stmt.setDouble(9, priceUsd);
-					stmt.setDouble(10, changePercent24h);
-					stmt.setDouble(11, vwap24h);
-					stmt.setString(12, explorer);
+					stmt.setDouble(5, marketCapUsd);
+					stmt.setDouble(6, priceUsd);
 
 					stmt.addBatch();
 				}
@@ -116,6 +103,4 @@ public class CryptoCollector {
 			System.out.println("Erreur lors du traitement des données JSON : " + e.getMessage());
 		}
 	}
-
-
 }
