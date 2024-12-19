@@ -2,10 +2,13 @@ package com.example.crypto;
 
 public class Main {
 	public static void main(String[] args) {
-		// Récupérer les données de l'API
+		// Créer l'instance de CryptoCollector
 		CryptoCollector collector = new CryptoCollector();
-		String jsonData = collector.collectData();
-		collector.insertDataIntoDatabase(jsonData);
 
+		// Récupérer les données pour tous les actifs
+		String jsonData = collector.collectAllData();
+
+		// Insérer les données dans la base de données
+		collector.insertDataIntoDatabase(jsonData);
 	}
 }

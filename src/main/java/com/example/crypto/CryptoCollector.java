@@ -7,19 +7,22 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CryptoCollector {
 
 	private static final String INSERT_QUERY = "INSERT INTO crypto_data_minimal "
-			+ "(id, rank, symbol, name, market_cap_usd, price_usd) "
+			+ "(rank, symbol, name, market_cap_usd, price_usd, date) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
 
-	public String collectData() {
+	// Récupérer les données pour tous les actifs
+	public String collectAllData() {
 		StringBuilder response = new StringBuilder();
 		try {
+			// URL pour récupérer la liste de tous les actifs
 			String apiUrl = "https://api.coincap.io/v2/assets";
 			URL url = new URL(apiUrl);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -36,9 +39,10 @@ public class CryptoCollector {
 			e.printStackTrace();
 		}
 
-		return response.toString(); // Retourne la réponse de l'API sous forme de String
+		return response.toString(); // Retourne la réponse JSON de l'API
 	}
 
+	// Insertion des données dans la base de données
 	public void insertDataIntoDatabase(String jsonData) {
 		try {
 			// Convertir la chaîne JSON en objet JSONObject
@@ -59,7 +63,6 @@ public class CryptoCollector {
 					JSONObject asset = data.getJSONObject(i);
 
 					// Récupérer les valeurs
-					String id = asset.getString("id");
 					int rank = asset.getInt("rank");
 					String symbol = asset.getString("symbol");
 					String name = asset.getString("name");
@@ -74,16 +77,19 @@ public class CryptoCollector {
 						priceUsd = 999_999.99; // Limite maximale pour les prix
 					}
 
+					// Récupérer la date actuelle sous forme de Timestamp
+					Timestamp currentDate = Timestamp.valueOf(LocalDateTime.now());
+
 					// Afficher les données à insérer
-					System.out.println("Insérer : " + id + ", " + rank + ", " + symbol + ", " + name);
+					System.out.println("Insérer : " + rank + ", " + symbol + ", " + name + ", " + currentDate);
 
 					// Insérer les données dans la base de données
-					stmt.setString(1, id);
-					stmt.setInt(2, rank);
-					stmt.setString(3, symbol);
-					stmt.setString(4, name);
-					stmt.setDouble(5, marketCapUsd);
-					stmt.setDouble(6, priceUsd);
+					stmt.setInt(1, rank);
+					stmt.setString(2, symbol);
+					stmt.setString(3, name);
+					stmt.setDouble(4, marketCapUsd);
+					stmt.setDouble(5, priceUsd);
+					stmt.setTimestamp(6, currentDate); // Passer un Timestamp pour la date
 
 					stmt.addBatch();
 				}
@@ -104,3 +110,4 @@ public class CryptoCollector {
 		}
 	}
 }
+
