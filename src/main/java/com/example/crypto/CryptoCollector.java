@@ -18,6 +18,7 @@ public class CryptoCollector {
 			+ "(rank, symbol, name, market_cap_usd, price_usd, date) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
 
+
 	// Récupérer les données pour tous les actifs
 	public String collectAllData() {
 		StringBuilder response = new StringBuilder();
