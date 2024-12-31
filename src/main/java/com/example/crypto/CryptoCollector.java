@@ -98,11 +98,6 @@ public class CryptoCollector {
 				// Exécuter le batch
 				stmt.executeBatch();
 				System.out.println("Données insérées avec succès !");
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("Erreur lors de l'exécution du batch : " + e.getMessage());
-			} finally {
-				DatabaseManager.disconnect();
 			}
 
 		} catch (Exception e) {
@@ -111,4 +106,3 @@ public class CryptoCollector {
 		}
 	}
 }
-

@@ -1,6 +1,5 @@
 <?php
-include('../config/database.php');
-
+include('config/database.php');
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($utilisateur && password_verify($mot_de_passe, $utilisateur['mot_de_passe'])) {
         $_SESSION['utilisateur_id'] = $utilisateur['id'];
         $_SESSION['nom'] = $utilisateur['nom'];
-        header("Location: accueil.php");
+        header("Location: tableau_crypto.php");
         exit;
     } else {
         echo "Identifiants incorrects.";
@@ -28,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
-    <link rel="stylesheet" href="../assets/css/conx.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <header>

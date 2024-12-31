@@ -1,5 +1,5 @@
 <?php
-include('../config/database.php');
+include('config/database.php');
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,13 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $query = "INSERT INTO utilisateurs (nom, email, mot_de_passe) VALUES (?, ?, ?)";
     $stmt = $pdo->prepare($query);
 
-    // Essayez d'exécuter la requête
     if ($stmt->execute([$nom, $email, $mot_de_passe])) {
-        // Si l'insertion réussit, redirigez vers accueil.php
-        header("Location: accueil.php");
+        header("Location: connexion.php");
         exit;
     } else {
-        // Si l'insertion échoue, affichez un message d'erreur
         echo "Erreur lors de l'inscription.";
     }
 }
@@ -26,37 +23,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/css/insc.css">
-    <title>Page d'Inscription</title>
+    <title>Inscription</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <header>
-        Bienvenue sur notre plateforme
+        <h1>Inscription</h1>
     </header>
     <main>
-        <div class="form-container">
-            <form class="styled-form" action="<?= $_SERVER['PHP_SELF']; ?>" method="POST">
-                <h2>Inscription</h2>
-                <div class="form-group">
-                    <input type="text" id="nom" name="nom" placeholder=" " required>
-                    <label for="nom">Nom d'utilisateur</label>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="email" name="email" placeholder=" " required>
-                    <label for="email">Adresse Email</label>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="mot_de_passe" name="mot_de_passe" placeholder=" " required>
-                    <label for="mot_de_passe">Mot de passe</label>
-                </div>
-                <button type="submit" class="btn">S'inscrire</button>
-                <a href="../pages/connexion.php" class="link">Vous avez déjà un compte ? Connectez-vous</a>
-            </form>
-        </div>
+        <form action="inscription.php" method="POST">
+            <label for="nom">Nom :</label>
+            <input type="text" name="nom" id="nom" required>
+            <label for="email">Email :</label>
+            <input type="email" name="email" id="email" required>
+            <label for="mot_de_passe">Mot de passe :</label>
+            <input type="password" name="mot_de_passe" id="mot_de_passe" required>
+            <button type="submit">S'inscrire</button>
+        </form>
     </main>
-    <footer>
-        <p>&copy; 2024 VotreEntreprise. Tous droits réservés.</p>
-    </footer>
 </body>
 </html>
