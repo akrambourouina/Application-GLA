@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($utilisateur && password_verify($mot_de_passe, $utilisateur['mot_de_passe'])) {
         $_SESSION['utilisateur_id'] = $utilisateur['id'];
         $_SESSION['nom'] = $utilisateur['nom'];
+        $_SESSION['email'] = $utilisateur['email'];
         header("Location: accueil.php");
         exit;
     } else {
