@@ -1,0 +1,4 @@
+com\example\crypto\CryptoCollectorAppTest.class
+com\example\crypto\DatabaseManagerTest.class
+com\example\crypto\FileStorageTest.class
+com\example\crypto\CryptoCollectorTest.class
