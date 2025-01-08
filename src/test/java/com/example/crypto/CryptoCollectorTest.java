@@ -1,7 +1,6 @@
 package com.example.crypto;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,22 +42,20 @@ class CryptoCollectorTest {
 				"    ]\n" +
 				"}";
 
-
 		// Mock de la connexion à la base de données
 		Connection mockConnection = mock(Connection.class);
 		PreparedStatement mockStatement = mock(PreparedStatement.class);
 
 		when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
 
-		// Mock de DatabaseManager pour retourner la connexion simulée
-		DatabaseManager databaseManagerMock = mock(DatabaseManager.class);
-		when(DatabaseManager.connect()).thenReturn(mockConnection);
+		// Création d'une instance de CryptoCollector avec la connexion mockée
+		CryptoCollector collector = new CryptoCollector(mockConnection);
 
 		// Appeler la méthode à tester
-		CryptoCollector collector = new CryptoCollector();
 		collector.insertDataIntoDatabase(mockJsonData);
 
 		// Vérifier que la méthode a tenté d'insérer les données
+		verify(mockConnection, times(1)).prepareStatement(anyString());
 		verify(mockStatement, times(2)).addBatch();
 		verify(mockStatement, times(1)).executeBatch();
 		System.out.println("Test réussi pour insertDataIntoDatabase.");

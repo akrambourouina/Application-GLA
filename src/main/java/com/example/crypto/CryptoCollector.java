@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import org.json.JSONArray;
@@ -18,6 +17,17 @@ public class CryptoCollector {
 			+ "(rank, symbol, name, market_cap_usd, price_usd, date) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
 
+	private Connection connection;
+
+	// Constructeur par défaut utilisant DatabaseManager
+	public CryptoCollector() {
+		this.connection = DatabaseManager.connect();
+	}
+
+	// Constructeur pour les tests permettant d'injecter une connexion
+	public CryptoCollector(Connection connection) {
+		this.connection = connection;
+	}
 
 	// Récupérer les données pour tous les actifs
 	public String collectAllData() {
@@ -50,15 +60,13 @@ public class CryptoCollector {
 			JSONObject jsonObject = new JSONObject(jsonData);
 			JSONArray data = jsonObject.getJSONArray("data");
 
-			// Se connecter à la base de données
-			Connection conn = DatabaseManager.connect();
-			if (conn == null) {
+			if (connection == null) {
 				System.out.println("Erreur de connexion à la base de données.");
 				return;
 			}
 
 			// Préparer la requête d'insertion
-			try (PreparedStatement stmt = conn.prepareStatement(INSERT_QUERY)) {
+			try (PreparedStatement stmt = connection.prepareStatement(INSERT_QUERY)) {
 				// Parcourir les données
 				for (int i = 0; i < data.length(); i++) {
 					JSONObject asset = data.getJSONObject(i);
@@ -81,25 +89,20 @@ public class CryptoCollector {
 					// Récupérer la date actuelle sous forme de Timestamp
 					Timestamp currentDate = Timestamp.valueOf(LocalDateTime.now());
 
-					// Afficher les données à insérer
-					System.out.println("Insérer : " + rank + ", " + symbol + ", " + name + ", " + currentDate);
-
 					// Insérer les données dans la base de données
 					stmt.setInt(1, rank);
 					stmt.setString(2, symbol);
 					stmt.setString(3, name);
 					stmt.setDouble(4, marketCapUsd);
 					stmt.setDouble(5, priceUsd);
-					stmt.setTimestamp(6, currentDate); // Passer un Timestamp pour la date
+					stmt.setTimestamp(6, currentDate);
 
 					stmt.addBatch();
 				}
 
-				// Exécuter le batch
 				stmt.executeBatch();
 				System.out.println("Données insérées avec succès !");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Erreur lors du traitement des données JSON : " + e.getMessage());

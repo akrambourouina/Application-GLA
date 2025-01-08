@@ -1,0 +1,5 @@
+com\example\crypto\DatabaseManager.class
+com\example\crypto\FileStorage.class
+com\example\crypto\Main.class
+com\example\crypto\CryptoCollector.class
+com\example\crypto\CryptoCollectorApp.class

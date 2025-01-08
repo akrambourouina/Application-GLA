@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatabaseManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pokedex-api</a> &gt; <a href="index.source.html" class="el_package">com.example.crypto</a> &gt; <span class="el_source">DatabaseManager.java</span></div><h1>DatabaseManager.java</h1><pre class="source lang-java linenums">package com.example.crypto;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+<span class="nc" id="L9">public class DatabaseManager {</span>
+<span class="fc" id="L10">	private static final Logger logger = Logger.getLogger(DatabaseManager.class.getName());</span>
+
+	private static final String SERVER_NAME = &quot;pedago01c.univ-avignon.fr&quot;;
+	private static final String USERNAME = &quot;uapv2300275&quot;;
+	private static final String PASSWORD = &quot;Py9rje&quot;;
+	private static final String DB_NAME = &quot;etd&quot;;
+<span class="fc" id="L16">	private static Connection conn = null;</span>
+
+	public static Connection connect() {
+<span class="pc bpc" id="L19" title="1 of 2 branches missed.">		if (conn == null) {</span>
+			try {
+<span class="fc" id="L21">				String url = &quot;jdbc:postgresql://&quot; + SERVER_NAME + &quot;:5432/&quot; + DB_NAME;</span>
+<span class="nc" id="L22">				conn = DriverManager.getConnection(url, USERNAME, PASSWORD);</span>
+<span class="nc" id="L23">				logger.log(Level.INFO, &quot;Connexion réussie !&quot;);</span>
+<span class="fc" id="L24">			} catch (SQLException e) {</span>
+<span class="fc" id="L25">				logger.log(Level.SEVERE, &quot;Erreur de connexion : &quot; + e.getMessage(), e);</span>
+<span class="nc" id="L26">			}</span>
+		}
+<span class="fc" id="L28">		return conn;</span>
+	}
+
+	public static void disconnect() {
+		try {
+<span class="pc bpc" id="L33" title="3 of 4 branches missed.">			if (conn != null &amp;&amp; !conn.isClosed()) {</span>
+<span class="nc" id="L34">				conn.close();</span>
+<span class="nc" id="L35">				logger.log(Level.INFO, &quot;Déconnexion réussie !&quot;);</span>
+			}
+<span class="nc" id="L37">		} catch (SQLException e) {</span>
+<span class="nc" id="L38">			logger.log(Level.SEVERE, &quot;Erreur lors de la déconnexion : &quot; + e.getMessage(), e);</span>
+<span class="fc" id="L39">		}</span>
+<span class="fc" id="L40">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

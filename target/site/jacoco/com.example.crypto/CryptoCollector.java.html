@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CryptoCollector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pokedex-api</a> &gt; <a href="index.source.html" class="el_package">com.example.crypto</a> &gt; <span class="el_source">CryptoCollector.java</span></div><h1>CryptoCollector.java</h1><pre class="source lang-java linenums">package com.example.crypto;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class CryptoCollector {
+
+	private static final String INSERT_QUERY = &quot;INSERT INTO crypto_data_minimal &quot;
+			+ &quot;(rank, symbol, name, market_cap_usd, price_usd, date) &quot;
+			+ &quot;VALUES (?, ?, ?, ?, ?, ?)&quot;;
+
+	private Connection connection;
+
+	// Constructeur par défaut utilisant DatabaseManager
+<span class="fc" id="L23">	public CryptoCollector() {</span>
+<span class="fc" id="L24">		this.connection = DatabaseManager.connect();</span>
+<span class="fc" id="L25">	}</span>
+
+	// Constructeur pour les tests permettant d'injecter une connexion
+<span class="fc" id="L28">	public CryptoCollector(Connection connection) {</span>
+<span class="fc" id="L29">		this.connection = connection;</span>
+<span class="fc" id="L30">	}</span>
+
+	// Récupérer les données pour tous les actifs
+	public String collectAllData() {
+<span class="fc" id="L34">		StringBuilder response = new StringBuilder();</span>
+		try {
+			// URL pour récupérer la liste de tous les actifs
+<span class="fc" id="L37">			String apiUrl = &quot;https://api.coincap.io/v2/assets&quot;;</span>
+<span class="fc" id="L38">			URL url = new URL(apiUrl);</span>
+<span class="fc" id="L39">			HttpURLConnection connection = (HttpURLConnection) url.openConnection();</span>
+<span class="fc" id="L40">			connection.setRequestMethod(&quot;GET&quot;);</span>
+<span class="fc" id="L41">			connection.setRequestProperty(&quot;Accept&quot;, &quot;application/json&quot;);</span>
+
+<span class="fc" id="L43">			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));</span>
+			String line;
+<span class="fc bfc" id="L45" title="All 2 branches covered.">			while ((line = in.readLine()) != null) {</span>
+<span class="fc" id="L46">				response.append(line);</span>
+			}
+<span class="fc" id="L48">			in.close();</span>
+<span class="nc" id="L49">		} catch (Exception e) {</span>
+<span class="nc" id="L50">			e.printStackTrace();</span>
+<span class="fc" id="L51">		}</span>
+
+<span class="fc" id="L53">		return response.toString(); // Retourne la réponse JSON de l'API</span>
+	}
+
+	// Insertion des données dans la base de données
+	public void insertDataIntoDatabase(String jsonData) {
+		try {
+			// Convertir la chaîne JSON en objet JSONObject
+<span class="fc" id="L60">			JSONObject jsonObject = new JSONObject(jsonData);</span>
+<span class="fc" id="L61">			JSONArray data = jsonObject.getJSONArray(&quot;data&quot;);</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">			if (connection == null) {</span>
+<span class="fc" id="L64">				System.out.println(&quot;Erreur de connexion à la base de données.&quot;);</span>
+<span class="fc" id="L65">				return;</span>
+			}
+
+			// Préparer la requête d'insertion
+<span class="fc" id="L69">			try (PreparedStatement stmt = connection.prepareStatement(INSERT_QUERY)) {</span>
+				// Parcourir les données
+<span class="fc bfc" id="L71" title="All 2 branches covered.">				for (int i = 0; i &lt; data.length(); i++) {</span>
+<span class="fc" id="L72">					JSONObject asset = data.getJSONObject(i);</span>
+
+					// Récupérer les valeurs
+<span class="fc" id="L75">					int rank = asset.getInt(&quot;rank&quot;);</span>
+<span class="fc" id="L76">					String symbol = asset.getString(&quot;symbol&quot;);</span>
+<span class="fc" id="L77">					String name = asset.getString(&quot;name&quot;);</span>
+<span class="fc" id="L78">					double marketCapUsd = asset.optDouble(&quot;marketCapUsd&quot;, 0.0);</span>
+<span class="fc" id="L79">					double priceUsd = asset.optDouble(&quot;priceUsd&quot;, 0.0);</span>
+
+					// Limiter les valeurs pour éviter les dépassements
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">					if (marketCapUsd &gt;= 1e12) {</span>
+<span class="nc" id="L83">						marketCapUsd = 999_999_999_999.99; // Limite maximale</span>
+					}
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">					if (priceUsd &gt;= 1e6) {</span>
+<span class="nc" id="L86">						priceUsd = 999_999.99; // Limite maximale pour les prix</span>
+					}
+
+					// Récupérer la date actuelle sous forme de Timestamp
+<span class="fc" id="L90">					Timestamp currentDate = Timestamp.valueOf(LocalDateTime.now());</span>
+
+					// Insérer les données dans la base de données
+<span class="fc" id="L93">					stmt.setInt(1, rank);</span>
+<span class="fc" id="L94">					stmt.setString(2, symbol);</span>
+<span class="fc" id="L95">					stmt.setString(3, name);</span>
+<span class="fc" id="L96">					stmt.setDouble(4, marketCapUsd);</span>
+<span class="fc" id="L97">					stmt.setDouble(5, priceUsd);</span>
+<span class="fc" id="L98">					stmt.setTimestamp(6, currentDate);</span>
+
+<span class="fc" id="L100">					stmt.addBatch();</span>
+				}
+
+<span class="fc" id="L103">				stmt.executeBatch();</span>
+<span class="fc" id="L104">				System.out.println(&quot;Données insérées avec succès !&quot;);</span>
+			}
+<span class="nc" id="L106">		} catch (Exception e) {</span>
+<span class="nc" id="L107">			e.printStackTrace();</span>
+<span class="nc" id="L108">			System.out.println(&quot;Erreur lors du traitement des données JSON : &quot; + e.getMessage());</span>
+<span class="fc" id="L109">		}</span>
+<span class="fc" id="L110">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

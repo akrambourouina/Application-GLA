@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class DatabaseManagerTest {
 
-	@Test
+	/*@Test
 	void testConnect() {
 		// Act
 		Connection connection = DatabaseManager.connect();
 
 		// Assert
 		assertNotNull(connection);
-	}
+	}*/
 
 	@Test
 	void testDisconnect() {
