@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
         }
 
-        echo "<p>Données insérées avec succès!</p>";
+      // echo "<p>Données insérées avec succès!</p>";
     } else {
         echo "<p>Aucune donnée trouvée pour la plage de dates sélectionnée.</p>";
     }
@@ -82,8 +82,92 @@ if (isset($startDate) && isset($endDate)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analyse Cryptomonnaie : <?php echo htmlspecialchars($cryptoName); ?></title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Style pour la page et le formulaire */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            font-weight: normal;
+        }
+
+        .form-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-container input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-container button[type="submit"] {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-container button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        /* Style pour le message d'insertion */
+        p {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Style pour le canvas */
+        #cryptoChart {
+            display: block;
+            margin: 40px auto;
+            max-width: 100%;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -91,22 +175,25 @@ if (isset($startDate) && isset($endDate)) {
     </header>
 
     <main>
-        <form method="POST">
-            <div>
-                <label for="start_date">Date de début :</label>
-                <input type="date" id="start_date" name="start_date" required>
-            </div>
-            <div>
-                <label for="end_date">Date de fin :</label>
-                <input type="date" id="end_date" name="end_date" required>
-            </div>
-            <div>
-                <button type="submit">Récupérer et Insérer les Données</button>
-            </div>
-        </form>
+        <div class="form-container">
+            <h2>Choisissez votre plage de dates</h2>
+            <form method="POST">
+                <div>
+                    <label for="start_date">Date de début :</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
+                <div>
+                    <label for="end_date">Date de fin :</label>
+                    <input type="date" id="end_date" name="end_date" required>
+                </div>
+                <div>
+                    <button type="submit">Récupérer et Insérer les Données</button>
+                </div>
+            </form>
+        </div>
 
         <?php if (isset($timestamps) && isset($pricesData)): ?>
-            <canvas id="cryptoChart"></canvas>
+            <canvas id="cryptoChart" width="800" height="400"></canvas>
             <script>
                 const ctx = document.getElementById('cryptoChart').getContext('2d');
                 const cryptoChart = new Chart(ctx, {
@@ -117,7 +204,7 @@ if (isset($startDate) && isset($endDate)) {
                             label: 'Prix en USD',
                             data: <?php echo json_encode($pricesData); ?>, // Prix
                             borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
+                            borderWidth: 2,
                             fill: false
                         }]
                     },
@@ -133,7 +220,7 @@ if (isset($startDate) && isset($endDate)) {
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Prix en USD'
+                                    text: 'Prix (USD)'
                                 }
                             }
                         }
@@ -141,7 +228,6 @@ if (isset($startDate) && isset($endDate)) {
                 });
             </script>
         <?php endif; ?>
-
     </main>
 
     <footer>
@@ -149,3 +235,7 @@ if (isset($startDate) && isset($endDate)) {
     </footer>
 </body>
 </html>
+
+<?php
+// VIDAGE DE LA TABLE après affichage
+$pdo->exec("DELETE FROM crypto_prices;");

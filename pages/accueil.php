@@ -1,7 +1,7 @@
 <?php
 include('../config/database.php');
 
-$query = "SELECT * FROM crypto_data_minimal";
+$query = "SELECT * FROM crypto_data_minimal LIMIT 12";
 $stmt = $pdo->query($query);
 $cryptos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -24,20 +24,18 @@ $cryptos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     
                     <th>Symbol</th>
                     <th>Name</th>
                     <th>Market Cap (USD)</th>
                     <th>Price (USD)</th>
-                    <th>Analyse</th>
-                    <th>Graphique</th> <!-- Nouvelle colonne -->
+                    <th>plages de temps</th>
+                    <th>Analyse</th> <!-- Nouvelle colonne -->
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($cryptos as $crypto): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($crypto['id']); ?></td>
                         <td><?php echo htmlspecialchars($crypto['symbol']); ?></td>
                         <td><?php echo htmlspecialchars($crypto['name']); ?></td>
                         <td><?php echo number_format($crypto['market_cap_usd'], 2); ?></td>
@@ -46,7 +44,7 @@ $cryptos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                          <td>
     <a href="analyse.php?name=<?php echo urlencode($crypto['name']); ?>" 
        style="color: #3498db; text-decoration: none; font-weight: bold;">
-        Voir Analyse
+      choisir la plages de temps
     </a>
 </td>
 
@@ -54,7 +52,7 @@ $cryptos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td>
     <a href="graphique.php?name=<?php echo urlencode($crypto['name']); ?>" 
        style="color: #e74c3c; text-decoration: none; font-weight: bold;">
-        Voir Graphique
+        Voir Analyse
     </a>
 </td>
                     </tr>

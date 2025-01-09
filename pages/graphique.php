@@ -121,6 +121,26 @@ foreach ($alertes as $alerte) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <style>
+        /* Mise en forme du conteneur principal */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Style du graphique */
         #chart-container {
             width: 600px;
             margin: 0 auto;
@@ -128,6 +148,67 @@ foreach ($alertes as $alerte) {
         canvas {
             width: 100% !important;
             height: auto !important;
+        }
+
+        /* Style pour la section du formulaire d'alerte */
+        section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: inline-block;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            max-width: 200px;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+            color: #333;
         }
     </style>
 </head>
@@ -191,3 +272,7 @@ foreach ($alertes as $alerte) {
     </script>
 </body>
 </html>
+
+<?php
+// VIDAGE DE LA TABLE après affichage
+$pdo->exec("DELETE FROM  alertes ;");
