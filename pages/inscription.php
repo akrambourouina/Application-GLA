@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Essayez d'exécuter la requête
     if ($stmt->execute([$nom, $email, $mot_de_passe])) {
         // Si l'insertion réussit, redirigez vers accueil.php
-        header("Location: accueil.php");
+        header("Location: connexion.php");
         exit;
     } else {
         // Si l'insertion échoue, affichez un message d'erreur

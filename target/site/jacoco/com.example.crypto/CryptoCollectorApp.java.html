@@ -21,13 +21,13 @@ import java.util.concurrent.TimeUnit;
 <span class="fc" id="L21">				String jsonData = collector.collectAllData();</span>
 
 				// Insérer les données dans la base de données
-<span class="fc" id="L24">				collector.insertDataIntoDatabase(jsonData);</span>
+<span class="nc" id="L24">				collector.insertDataIntoDatabase(jsonData);</span>
 
 <span class="nc" id="L26">			} catch (Exception e) {</span>
 <span class="nc" id="L27">				System.err.println(&quot;Erreur lors de la collecte ou l'insertion des données : &quot; + e.getMessage());</span>
 <span class="nc" id="L28">				e.printStackTrace();</span>
-<span class="fc" id="L29">			}</span>
-<span class="fc" id="L30">		}, 0, 30, TimeUnit.SECONDS); // Délai initial : 0 seconde, Période : 30 secondes</span>
+<span class="nc" id="L29">			}</span>
+<span class="nc" id="L30">		}, 0, 30, TimeUnit.SECONDS); // Délai initial : 0 seconde, Période : 30 secondes</span>
 
 		// Gestion propre à la fin (par exemple, lors de la fermeture de l'application)
 <span class="fc" id="L33">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>

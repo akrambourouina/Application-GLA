@@ -2,5 +2,5 @@ projectKey=projetGLA
 serverUrl=http://localhost:9000
 serverVersion=25.1.0.102122
 dashboardUrl=http://localhost:9000/dashboard?id=projetGLA
-ceTaskId=6ca37c57-1443-490d-996e-00a1770a3d5c
-ceTaskUrl=http://localhost:9000/api/ce/task?id=6ca37c57-1443-490d-996e-00a1770a3d5c
+ceTaskId=cbea6eb9-ec3f-4a2a-9440-58265f7dc24c
+ceTaskUrl=http://localhost:9000/api/ce/task?id=cbea6eb9-ec3f-4a2a-9440-58265f7dc24c

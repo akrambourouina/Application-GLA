@@ -16,23 +16,23 @@ import java.util.logging.Logger;
 <span class="fc" id="L16">	private static Connection conn = null;</span>
 
 	public static Connection connect() {
-<span class="pc bpc" id="L19" title="1 of 2 branches missed.">		if (conn == null) {</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">		if (conn == null) {</span>
 			try {
 <span class="fc" id="L21">				String url = &quot;jdbc:postgresql://&quot; + SERVER_NAME + &quot;:5432/&quot; + DB_NAME;</span>
-<span class="nc" id="L22">				conn = DriverManager.getConnection(url, USERNAME, PASSWORD);</span>
-<span class="nc" id="L23">				logger.log(Level.INFO, &quot;Connexion réussie !&quot;);</span>
-<span class="fc" id="L24">			} catch (SQLException e) {</span>
-<span class="fc" id="L25">				logger.log(Level.SEVERE, &quot;Erreur de connexion : &quot; + e.getMessage(), e);</span>
-<span class="nc" id="L26">			}</span>
+<span class="fc" id="L22">				conn = DriverManager.getConnection(url, USERNAME, PASSWORD);</span>
+<span class="fc" id="L23">				logger.log(Level.INFO, &quot;Connexion réussie !&quot;);</span>
+<span class="nc" id="L24">			} catch (SQLException e) {</span>
+<span class="nc" id="L25">				logger.log(Level.SEVERE, &quot;Erreur de connexion : &quot; + e.getMessage(), e);</span>
+<span class="fc" id="L26">			}</span>
 		}
 <span class="fc" id="L28">		return conn;</span>
 	}
 
 	public static void disconnect() {
 		try {
-<span class="pc bpc" id="L33" title="3 of 4 branches missed.">			if (conn != null &amp;&amp; !conn.isClosed()) {</span>
-<span class="nc" id="L34">				conn.close();</span>
-<span class="nc" id="L35">				logger.log(Level.INFO, &quot;Déconnexion réussie !&quot;);</span>
+<span class="pc bpc" id="L33" title="2 of 4 branches missed.">			if (conn != null &amp;&amp; !conn.isClosed()) {</span>
+<span class="fc" id="L34">				conn.close();</span>
+<span class="fc" id="L35">				logger.log(Level.INFO, &quot;Déconnexion réussie !&quot;);</span>
 			}
 <span class="nc" id="L37">		} catch (SQLException e) {</span>
 <span class="nc" id="L38">			logger.log(Level.SEVERE, &quot;Erreur lors de la déconnexion : &quot; + e.getMessage(), e);</span>
